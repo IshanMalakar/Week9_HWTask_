@@ -1,0 +1,37 @@
+{
+    "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+    "title": "Unemployment Rate by Region in Victoria",
+    "width": 800,
+    "height": 600,
+    "data": {
+      "url": "SA4_2021_AUST_GDA94.json",
+      "format": {"type": "topojson", "feature": "VictoriaMap"}
+    },
+    "projection": {"type": "mercator"},
+    "transform": [
+      {
+        "lookup": "properties.SA4_NAME21",
+        "from": {
+          "data": {
+            "url": "../Data/MelbUnemployData.csv",
+            "format": {"type": "csv"}
+          },
+          "key": "Region",
+          "fields": ["UnemploymentRate"]
+        }
+      }
+    ],
+    "mark": {"type": "geoshape", "stroke": "white", "strokeWidth": 1},
+    "encoding": {
+      "color": {
+        "field": "UnemploymentRate",
+        "type": "quantitative",
+        "scale": {"domain": [0, 10], "scheme": "reds"}
+      },
+      "tooltip": [
+        {"field": "properties.SA4_NAME21", "type": "nominal", "title": "Region"},
+        {"field": "UnemploymentRate", "type": "quantitative", "title": "Unemployment Rate (%)"}
+      ]
+    }
+  }
+  

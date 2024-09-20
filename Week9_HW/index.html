@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Victoria Unemployment Choropleth</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-lite@5"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
+</head>
+<body>
+  <h1>Unemployment Rates by Region in Victoria (July 2024)</h1>
+
+  <div id="choropleth_map"></div>
+
+  <script type="text/javascript">
+    const spec = {
+      "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+      "title": "Unemployment Rate by Region in Victoria",
+      "width": 800,
+      "height": 600,
+      "data": {
+        "url": "js/SA4_2021_AUST_GDA94.json",
+        "format": {"type": "topojson", "feature": "VictoriaMap"}
+      },
+      "projection": {"type": "mercator"},
+      "transform": [
+        {
+          "lookup": "properties.SA4_NAME21",
+          "from": {
+            "data": {
+              "url": "Data/MelbUnemployData.csv",
+              "format": {"type": "csv"}
+            },
+            "key": "Region",
+            "fields": ["UnemploymentRate"]
+          }
+        }
+      ],
+      "mark": {"type": "geoshape", "stroke": "white", "strokeWidth": 1},
+      "encoding": {
+        "color": {
+          "field": "UnemploymentRate",
+          "type": "quantitative",
+          "scale": {"domain": [0, 10], "scheme": "reds"}
+        },
+        "tooltip": [
+          {"field": "properties.SA4_NAME21", "type": "nominal", "title": "Region"},
+          {"field": "UnemploymentRate", "type": "quantitative", "title": "Unemployment Rate (%)"}
+        ]
+      }
+    };
+
+    // Render the map
+    vegaEmbed('#choropleth_map', spec).catch(console.error);
+  </script>
+</body>
+</html>
